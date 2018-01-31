@@ -153,6 +153,7 @@ contract TicTacToe
       uint row1 = (100 * (g.board[0][0] + 1)) + (10 * (g.board[0][1] + 1)) + (g.board[0][2] + 1);
       uint row2 = (100 * (g.board[1][0] + 1)) + (10 * (g.board[1][1] + 1)) + (g.board[1][2] + 1);
       uint row3 = (100 * (g.board[2][0] + 1)) + (10 * (g.board[2][1] + 1)) + (g.board[2][2] + 1);
+
       return (games[host].balance,
               games[host].turn,
               games[host].opposition,
