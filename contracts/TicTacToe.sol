@@ -125,8 +125,8 @@ contract TicTacToe
     {
         Game g = games[host];
         uint count = 0;
-        for(uint r; r < 3; r++)
-            for(uint c; c < 3; c++)
+        for(uint r = 0; r < 3; r++)
+            for(uint c = 0; c < 3; c++)
                 if(g.board[r][c] > 0)
                     count++;
         if(count >= 9)
@@ -142,30 +142,11 @@ contract TicTacToe
             g.opposition = 0;
             g.time_limit = 0;
 
-            for(uint r; r < 3; r++)
-                for(uint c; c < 3; c++)
+            for(uint r = 0; r < 3; r++)
+                for(uint c = 0; c < 3; c++)
                     g.board[r][c] = 0;
-
-            // For Later
-            //delete games[host];
         }
     }
-
-    /*function get_state(address host) returns (uint o_balance, address o_opposition,
-    uint o_timelimit, uint o_turn, uint o_row1, uint o_row2, uint o_row3)
-    {
-        Game g = games[host];
-        o_balance = g.balance;
-        o_opposition = g.opposition;
-        o_timelimit = g.time_limit;
-        o_turn = g.turn;
-        o_row1 = (100 * (g.board[0][0] + 1))
-        + (10 * (g.board[0][1] + 1)) + (g.board[0][2] + 1);
-        o_row2 = (100 * (g.board[1][0] + 1))
-        + (10 * (g.board[1][1] + 1)) + (g.board[1][2] + 1);
-        o_row3 = (100 * (g.board[2][0] + 1))
-        + (10 * (g.board[2][1] + 1)) + (g.board[2][2] + 1);
-    }*/
 
     function get_game(address host) public view returns(uint, uint, address, uint, uint, uint){
       Game g = games[host];
@@ -179,5 +160,9 @@ contract TicTacToe
               row2,
               row3
               );
+    }
+
+    function get_blocktimestamp() public view returns(uint){
+      return(block.timestamp);
     }
 }
