@@ -121,7 +121,7 @@ contract TicTacToe
                 return true;
     }
 
-    function is_full(address host) returns (bool retVal)
+    function is_board_full(address host) returns (bool retVal)
     {
         Game g = games[host];
         uint count = 0;
@@ -133,7 +133,7 @@ contract TicTacToe
             return true;
     }
 
-    function clear(address host)
+    function restart(address host)
     {
         Game g = games[host];
         if(g.balance == 0)
@@ -148,7 +148,7 @@ contract TicTacToe
         }
     }
 
-    function get_game(address host) public view returns(uint, uint, address, uint, uint, uint){
+    function get_game_status(address host) public view returns(uint, uint, address, uint, uint, uint){
       Game g = games[host];
       uint row1 = (100 * (g.board[0][0] + 1)) + (10 * (g.board[0][1] + 1)) + (g.board[0][2] + 1);
       uint row2 = (100 * (g.board[1][0] + 1)) + (10 * (g.board[1][1] + 1)) + (g.board[1][2] + 1);
