@@ -24,7 +24,7 @@ contract TicTacToe
         Game g = games[msg.sender];
         if(g.balance == 0)
         {
-            clear(msg.sender);
+            restart(msg.sender);
             g.balance += msg.value;
         }
     }
@@ -55,12 +55,12 @@ contract TicTacToe
         {
             g.board[row][column] = player;
 
-            if(is_full(host))
+            if(is_board_full(host))
             {
                 host.send(g.balance/2);
                 g.opposition.send(g.balance/2);
                 g.balance = 0;
-                clear(host);
+                restart(host);
                 return;
             }
 
@@ -72,7 +72,7 @@ contract TicTacToe
                     g.opposition.send(g.balance);
 
                 g.balance = 0;
-                clear(host);
+                restart(host);
                 return;
             }
 
@@ -95,7 +95,7 @@ contract TicTacToe
                 g.opposition.send(g.balance);
 
             g.balance = 0;
-            clear(host);
+            restart(host);
         }
     }
 
