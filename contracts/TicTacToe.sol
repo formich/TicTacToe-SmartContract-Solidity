@@ -36,7 +36,7 @@ contract TicTacToe
     {
         Game g = games[host];
         // If the match does not exist or the opposition has already joined, exit.
-        if(!g.isSet || g.opposition > 0) throw;
+        if(!g.isSet || g.opposition > 0 || msg.value != g.balance) throw;
         // Check if the host is not challenging himself
         if(g.opposition == 0 && msg.sender != host)
         {
