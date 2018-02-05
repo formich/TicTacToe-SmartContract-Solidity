@@ -23,10 +23,10 @@ contract TicTacToe
     mapping (address => Game) games;
 
     // Function called by the client that want host the game to start it
-    function start() has_value payable
+    function start() public has_value payable
     {
         // Assign a struct to the host
-        Game g = games[msg.sender];
+        Game storage g = games[msg.sender];
         // Check if another game has already started at the same address
         if(g.balance == 0)
         {
@@ -38,11 +38,12 @@ contract TicTacToe
 
     //Function called by the opponent to join an hosted game,
     //passing the host wallet addres as parameter
-    function join(address host) has_value payable
+    function join(address host) public has_value payable
     {
-        Game g = games[host];
+        Game storage g = games[host];
         // If the match does not exist or the opposition has already joined, exit.
-        if(!g.isSet || g.opposition > 0 || msg.value != g.balance) throw;
+        //if(!g.isSet || g.opposition > 0 || msg.value != g.balance) throw;
+        require(g.isSet && g.opposition == 0 && msg.value == g.balance);
         // Check if the host is not challenging himself
         if(g.opposition == 0 && msg.sender != host)
         {
@@ -57,9 +58,9 @@ contract TicTacToe
     //[(0,0),(0,1),(0,2)]
     //[(1,0),(1,1),(1,2)]
     //[(2,0),(2,1),(2,2)]
-    function play(address host, uint row, uint column)
+    function play(address host, uint row, uint column) public
     {
-        Game g = games[host];
+        Game storage g = games[host];
 
         //Assign an int to identify players, host -> 1, opposition -> 2
         uint8 player = 2;
@@ -87,8 +88,8 @@ contract TicTacToe
             // If the board is full resend halved balance to each player
             if(is_board_full(host))
             {
-                host.send(g.balance/2);
-                g.opposition.send(g.balance/2);
+                host.transfer(g.balance/2);
+                g.opposition.transfer(g.balance/2);
                 g.balance = 0;
                 restart(host);
                 return;
@@ -99,9 +100,9 @@ contract TicTacToe
             if(is_winner(host, player))
             {
                 if(player == 1)
-                    host.send(g.balance);
+                    host.transfer(g.balance);
                 else
-                    g.opposition.send(g.balance);
+                    g.opposition.transfer(g.balance);
 
                 g.balance = 0;
                 restart(host);
@@ -118,18 +119,18 @@ contract TicTacToe
 
     // This function is called in order to claim the reward in case the opponent
     // exceed the time limit.
-    function claim_reward(address host) returns (bool retVal)
+    function claim_reward(address host) public
     {
-        Game g = games[host];
+        Game storage g = games[host];
 
         if(g.opposition != 0
         && g.balance > 0
         && block.timestamp > g.time_limit)
         {
             if(g.turn == 2)
-                host.send(g.balance);
+                host.transfer(g.balance);
             else
-                g.opposition.send(g.balance);
+                g.opposition.transfer(g.balance);
 
             g.balance = 0;
             restart(host);
@@ -137,19 +138,17 @@ contract TicTacToe
     }
 
     function check(address host, uint player, uint r1, uint r2, uint r3,
-    uint c1, uint c2, uint c3) returns (bool retVal)
+    uint c1, uint c2, uint c3) private view returns (bool retVal)
     {
-        Game g = games[host];
+        Game storage g = games[host];
         if(g.board[r1][c1] == player && g.board[r2][c2] == player
         && g.board[r3][c3] == player)
             return true;
     }
 
     // Boolean function that verify wheter the board is in a winning condition or not
-    function is_winner(address host, uint player) returns (bool winner)
+    function is_winner(address host, uint player) private view returns (bool winner)
     {
-        Game g = games[host];
-
         // Verify if there's a winning streak on diagonals
         if(check(host, player, 0, 1, 2, 0, 1, 2) || check(host, player, 0, 1, 2, 2, 1, 0))
             return true;
@@ -162,9 +161,9 @@ contract TicTacToe
 
     // Booleand function that verify wheter the board is full or not
     // Simply counts number of signs, if thet are 9 then the board is full
-    function is_board_full(address host) returns (bool retVal)
+    function is_board_full(address host) private view returns (bool retVal)
     {
-        Game g = games[host];
+        Game storage g = games[host];
         uint count = 0;
         for(uint r = 0; r < 3; r++)
             for(uint c = 0; c < 3; c++)
@@ -176,9 +175,9 @@ contract TicTacToe
 
     // Function used to restart the game, it's possible only if there's not
     // appended balance.
-    function restart(address host)
+    function restart(address host) private
     {
-        Game g = games[host];
+        Game storage g = games[host];
         if(g.balance == 0)
         {
             g.turn = 1;
@@ -193,7 +192,7 @@ contract TicTacToe
 
     // Debug function to print some attributes of the game
     function get_game_status(address host) public view returns(uint, uint, address, uint, uint, uint){
-      Game g = games[host];
+      Game storage g = games[host];
       uint row1 = (100 * (g.board[0][0] + 1)) + (10 * (g.board[0][1] + 1)) + (g.board[0][2] + 1);
       uint row2 = (100 * (g.board[1][0] + 1)) + (10 * (g.board[1][1] + 1)) + (g.board[1][2] + 1);
       uint row3 = (100 * (g.board[2][0] + 1)) + (10 * (g.board[2][1] + 1)) + (g.board[2][2] + 1);
