@@ -14,6 +14,7 @@ contract TicTacToe
         address opposition;
         uint time_limit;
         mapping(uint => mapping(uint => uint)) board;
+        bool isSet;
     }
 
     mapping (address => Game) games;
@@ -22,8 +23,10 @@ contract TicTacToe
     function start() has_value payable
     {
         Game g = games[msg.sender];
+        // Check if another game has already started at the same address
         if(g.balance == 0)
         {
+            g.isSet = true;
             restart(msg.sender);
             g.balance += msg.value;
         }
@@ -32,6 +35,9 @@ contract TicTacToe
     function join(address host) has_value payable
     {
         Game g = games[host];
+        // If the match does not exist or the opposition has already joined, exit.
+        if(!g.isSet || g.opposition > 0) throw;
+        // Check if the host is not challenging himself
         if(g.opposition == 0 && msg.sender != host)
         {
             g.balance += msg.value;
