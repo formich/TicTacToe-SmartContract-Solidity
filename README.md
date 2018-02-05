@@ -1,5 +1,5 @@
 ## TicTacToe solidity
-A simple implementation of TicTacToe game in Solidity.
+A simple implementation of TicTacToe game in [Solidity](https://solidity.readthedocs.io/en/develop/).
 
 Following, a script to run in truffle console in order to play a demo match:
 
