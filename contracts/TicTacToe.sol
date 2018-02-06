@@ -113,7 +113,7 @@ contract TicTacToe
             g.turn = player;
 
             // Set time limit for the next move (in seconds), 10 minutes.
-            g.time_limit = block.timestamp + (600);
+            g.time_limit = block.timestamp + (30);
         }
     }
 
@@ -131,7 +131,6 @@ contract TicTacToe
                 host.transfer(g.balance);
             else
                 g.opposition.transfer(g.balance);
-
             g.balance = 0;
             restart(host);
         }
