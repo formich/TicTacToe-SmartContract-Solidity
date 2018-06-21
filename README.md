@@ -4,8 +4,8 @@ A simple implementation of TicTacToe SmartContract game in [Solidity](https://so
 Features:
  - The game allows players to bet Ether on a TicTacToe Match, hoster and joiner has to bet the same amount of money;
  - The winner automatically gets the pot;
- - If the game is drawn then the plot is equally splitted;
- - The players are enforced to finish the match. So if one decide to leavem, after 10 minutes other player can reclaim the whole pot;
+ - If the game is drawn then the pot is equally splitted;
+ - The players are enforced to finish the match. So if one decide to leave, after 10 minutes other player can reclaim the whole pot;
 
  ### Install and Run
 
